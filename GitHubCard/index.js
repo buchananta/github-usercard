@@ -4,9 +4,9 @@ import axios from 'axios';
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-axios.get('https://api.github.com/users/buchananta')
-  .then(response => console.log(response.data))
-  .catch(error => console.error("CAUGHT ERROR" + error));
+// axios.get('https://api.github.com/users/torvalds/followers?page=2')
+//   .then(response => console.log(response.data))
+//   .catch(error => console.error("CAUGHT ERROR" + error));
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -34,7 +34,7 @@ axios.get('https://api.github.com/users/buchananta')
     user, and adding that card to the DOM.
 */
 
-const followersArray = [
+let followersArray = [
     'torvalds',
     'tetondan',
     'dustinmyers',
@@ -42,13 +42,49 @@ const followersArray = [
     'luishrd',
     'bigknell',
 ];
+
+//STRETCH GOAL STUFF
+function linusCards(followers) {
+  //take an array of follower usernames, and append cards to the page
+  followers.forEach(person => {
+    axios.get(`https://api.github.com/users/${person}`)
+      .then(res => {
+        cards.appendChild(makeCard(res.data))
+      })
+      .catch(error => {
+        return console.error(`error retrieving ${person}: ` + error)
+      })
+    }
+  )
+}
+//now lets set the page number, and start grabbing
+function getFollowers(userName, page) {
+  //get an array of followers
+  axios.get(`https://api.github.com/users/${userName}/followers?page=${page}`)
+    .then(res => {
+      //call linusCards to append followers to page
+      //actually, res is an array of objects full of data.
+      //lets map!
+      console.log(`response is`);
+      res = res.data.map(personObj => personObj.login);
+      console.log(res);
+      linusCards(res);
+    })
+    .catch(error => {
+      return console.error(`error retrieving ${userName} ${page} followers: ${error}`); 
+    })
+}
+
+getFollowers('torvalds', 1);
+//END OF STRETCH GOAL STUFF
+
 followersArray.forEach(person => {
   axios.get(`https://api.github.com/users/${person}`)
     .then(res => {
       cards.appendChild(makeCard(res.data))
     })
     .catch(error => {
-      return console.error(`error retrieving ${person}` + error)
+      return console.error(`error retrieving ${person}: ` + error)
     })
   }
 )
