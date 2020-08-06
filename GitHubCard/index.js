@@ -109,6 +109,13 @@ followersArray.forEach(person => {
 */
 function makeCard(data) {
   const element = document.createElement('div');
+  const btn = document.createElement('button');
+  btn.textContent = '+'
+  btn.addEventListener('click', event => {
+    console.log(btn.nextElementSibling);
+    debugger;
+    btn.nextElementSibling.classList.toggle('no-display');
+  })
   element.className = 'card';
   element.innerHTML = `<img src = ${data.avatar_url} />
   <div class="card-info">
@@ -122,7 +129,10 @@ function makeCard(data) {
       <p>Following: ${data.following}</p>
       <p>Bio: ${data.bio}</p>
       </div>
-    </div>`
+      <img class='temp'>
+      <div class='expanded-info no-display'></div>
+    </div>`;
+    element.querySelector('.temp').replaceWith(btn);
   return element;
 }
 /*
